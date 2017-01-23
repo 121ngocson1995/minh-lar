@@ -14,6 +14,3 @@
 Route::get('/', 'StudentController@show');
 Route::get('/ListByRequest', 'StudentController@show');
 Route::get('/students/{student}/edit', 'StudentController@edit');
-Auth::routes();
-
-Route::get('/home', 'HomeController@index');
