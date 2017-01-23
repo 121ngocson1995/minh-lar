@@ -22,10 +22,10 @@ class CreateGradeTable extends Migration
                 ->on('students')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->integer('semester')               //INT(10)
+            $table->integer('semester_id')               //INT(10)
                 ->unsigned();
-            $table->foreign('semester')               //foreign key -> students.id
-                ->references('semester')
+            $table->foreign('semester_id')               //foreign key -> students.id
+                ->references('id')
                 ->on('semesters')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
@@ -38,7 +38,7 @@ class CreateGradeTable extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->unique(['student_id', 'semester']);
+            $table->unique(['student_id', 'semester_id']);
         });
     }
 
