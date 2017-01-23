@@ -13,7 +13,4 @@
 
 Route::get('/', 'StudentController@show');
 Route::get('/ListByRequest', 'StudentController@show');
-Route::get('/edit', function ()
-{
-	return view('editStudent');
-});
+Route::get('/students/{student}/edit', 'StudentController@edit');

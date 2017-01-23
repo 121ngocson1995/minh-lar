@@ -24,4 +24,8 @@ class StudentController extends Controller
 		return view('show', compact(['student', 'combobox', 'semesters']));
 	}
 
+	public function edit()
+	{
+		return view('editStudent');
+	}
 }

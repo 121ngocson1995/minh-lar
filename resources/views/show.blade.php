@@ -35,7 +35,7 @@
 		<tr>
 			<th><input type="checkbox" name="" value=""></th>
 			<th>{{ $student->id }} </th>
-			<th>{{ $student->name }}</th> 
+			<th><a href="students/{{ $student->id }}/edit">{{ $student->name }}</a></th>
 			<th>{{ $student->age }}</th>
 			<?php $grade = $student->grades; ?>
 			@foreach($semesters as $semester)
@@ -89,4 +89,3 @@
 </table>
 </form>
 @stop
-
