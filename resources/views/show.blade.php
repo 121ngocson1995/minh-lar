@@ -18,7 +18,7 @@
 		>Semester {{$semester->semester}}</option>
 	@endforeach
 </select>
-</h2> 
+</h2>
 <table class="table table-hover"  align="center">
 	@if(strcmp($combobox, 'All semester') == 0)
 		<tr>
@@ -26,9 +26,9 @@
 			<th>Student ID</th>
 			<th>Name</th> 
 			<th>Age</th>
-			<th>Semester 1</th>
-			<th>Semester 2</th>
-			<th>Semester 3</th>
+			@foreach($semesters as $semester)
+			<th>Semester {{ $semester->semester}}</th>
+			@endforeach
 			<th>Average</th>
 		</tr>
 		@foreach ($student as $student)
@@ -38,30 +38,16 @@
 			<th>{{ $student->name }}</th> 
 			<th>{{ $student->age }}</th>
 			<?php $grade = $student->grades; ?>
+			@foreach($semesters as $semester)
 			<th>@for ($i=0; $i < count($grade) ; $i++) 
-					@if ($grade[$i]->semester == 1)
+					@if ($grade[$i]->semester_id == $semester->semester)
 						Math: {{ $grade[$i]->math }} <br>
 						Chemistry: {{ $grade[$i]->chemistry }} <br>
 						Physic: {{ $grade[$i]->physics }} <br>
 						Average: {{ round (($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3, 1)}}
 					@endif
 				@endfor</th>
-			<th>@for ($i=0; $i < count($grade) ; $i++) 
-				@if ($grade[$i]->semester == 2)
-					Math: {{ $grade[$i]->math }} <br>
-					Chemistry: {{ $grade[$i]->chemistry }} <br>
-					Physic: {{ $grade[$i]->physics }} <br>
-					Average: {{ round (($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3, 1)}}
-				@endif
-			@endfor</th>
-			<th>@for ($i=0; $i < count($grade) ; $i++) 
-				@if ($grade[$i]->semester == 3)
-					Math: {{ $grade[$i]->math }} <br>
-					Chemistry: {{ $grade[$i]->chemistry }} <br>
-					Physic: {{ $grade[$i]->physics }} <br>
-					Average: {{ round (($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3, 1)}}
-				@endif
-			@endfor</th>
+			@endforeach
 			<th><?php $sum = 0;?>
 			@for ($i=0; $i < count($grade) ; $i++)
 				<?php $sum = $sum + ($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3 ?>
@@ -70,13 +56,14 @@
 		</tr>
 		@endforeach
 	@endif
-	@if(strcmp($combobox, '1') == 0)
+	@for ($i=0; $i < count($semesters); $i++) { 
+		@if(strcmp($semesters[$i]->semester, $combobox) == 0)
 	<tr>
 			<th> </th>
 			<th>Student ID</th>
 			<th>Name</th> 
 			<th>Age</th>
-			<th>Semester 1</th>
+			<th>Semester {{$semesters[$i]->semester}}</th>
 		</tr>
 		@foreach ($student as $student)
 		<tr>
@@ -85,69 +72,20 @@
 			<th>{{ $student->name }}</th> 
 			<th>{{ $student->age }}</th>
 			<?php $grade = $student->grades; ?>
-			<th>@for ($i=0; $i < count($grade) ; $i++) 
-					@if ($grade[$i]->semester == 1)
-						Math: {{ $grade[$i]->math }} <br>
-						Chemistry: {{ $grade[$i]->chemistry }} <br>
-						Physic: {{ $grade[$i]->physics }} <br>
-						Average: {{ round (($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3, 1)}}
+			<th>@for ($j=0; $j < count($grade) ; $j++) 
+					@if ($grade[$j]->semester_id == $semesters[$i]->semester)
+						Math: {{ $grade[$j]->math }} <br>
+						Chemistry: {{ $grade[$j]->chemistry }} <br>
+						Physic: {{ $grade[$j]->physics }} <br>
+						Average: {{ round (($grade[$j]->physics + $grade[$j]->math + $grade[$j]->chemistry)/3, 1)}}
 					@endif
 				@endfor</th>
 		</tr>
 		@endforeach
 	@endif
-	@if(strcmp($combobox, '2') == 0)
-	<tr>
-			<th> </th>
-			<th>Student ID</th>
-			<th>Name</th> 
-			<th>Age</th>
-			<th>Semester 2</th>
-		</tr>
-		@foreach ($student as $student)
-		<tr>
-			<th><input type="checkbox" name="" value=""></th>
-			<th>{{ $student->id }} </th>
-			<th>{{ $student->name }}</th> 
-			<th>{{ $student->age }}</th>
-			<?php $grade = $student->grades; ?>
-			<th>@for ($i=0; $i < count($grade) ; $i++) 
-					@if ($grade[$i]->semester == 2)
-						Math: {{ $grade[$i]->math }} <br>
-						Chemistry: {{ $grade[$i]->chemistry }} <br>
-						Physic: {{ $grade[$i]->physics }} <br>
-						Average: {{ round (($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3, 1)}}
-					@endif
-				@endfor</th>
-					</tr>
-		@endforeach
-	@endif
-	@if(strcmp($combobox, '3') == 0)
-	<tr>
-			<th> </th>
-			<th>Student ID</th>
-			<th>Name</th> 
-			<th>Age</th>
-			<th>Semester 3</th>
-	</tr>
-		@foreach ($student as $student)
-		<tr>
-			<th><input type="checkbox" name="" value=""></th>
-			<th>{{ $student->id }} </th>
-			<th>{{ $student->name }}</th> 
-			<th>{{ $student->age }}</th>
-			<?php $grade = $student->grades; ?>
-			<th>@for ($i=0; $i < count($grade) ; $i++) 
-					@if ($grade[$i]->semester == 3)
-						Math: {{ $grade[$i]->math }} <br>
-						Chemistry: {{ $grade[$i]->chemistry }} <br>
-						Physic: {{ $grade[$i]->physics }} <br>
-						Average: {{ round (($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3, 1)}}
-					@endif
-				@endfor</th>
-					</tr>
-		@endforeach
-	@endif
+	}
+	@endfor
+	
 </table>
 </form>
 @stop
