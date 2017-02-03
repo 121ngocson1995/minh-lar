@@ -58,7 +58,7 @@
 		</tr>
 		@endforeach
 	@endif
-	@for ($i=0; $i < count($semesters); $i++)
+	@for ($i=0; $i < count($semesters); $i++) { 
 		@if(strcmp($semesters[$i]->semester, $combobox) == 0)
 	<tr>
 			<th> </th>
@@ -85,7 +85,7 @@
 		</tr>
 		@endforeach
 	@endif
-	
+	}
 	@endfor
 	
 </table>
