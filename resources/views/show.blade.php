@@ -19,7 +19,7 @@
 	@endforeach
 </select>
 </h2>
-<button class="btn btn-primary btn-sm" style="margin: 10px;">Add student</button>
+<button class="btn btn-primary btn-sm" style="margin: 10px;" onclick="this.form.submit()" name="optionAdd" value="true">Add student</button>
 <button class="btn btn-danger btn-sm" style="margin: 10px;">Delete student</button>
 <table class="table table-hover"  align="center">
 	@if(strcmp($combobox, 'All semester') == 0)
@@ -78,7 +78,7 @@
 					@if ($grade[$j]->semester_id == $semesters[$i]->semester)
 						Math: {{ $grade[$j]->math }} <br>
 						Chemistry: {{ $grade[$j]->chemistry }} <br>
-						Physic: {{ $grade[$j]->physics }} <br>
+						Physics: {{ $grade[$j]->physics }} <br>
 						Average: {{ round (($grade[$j]->physics + $grade[$j]->math + $grade[$j]->chemistry)/3, 1)}}
 					@endif
 				@endfor</th>
