@@ -58,7 +58,13 @@
 			@for ($i=0; $i < count($grade) ; $i++)
 				<?php $sum = $sum + ($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3 ?>
 			@endfor
-			<?php echo round(($sum/count($grade)),1)?></th>
+			<?php if (count($grade) != 0) {
+				$semesterNumber = count($grade);
+			}else{
+				$semesterNumber = 1;
+			}
+			$semesterNumber = count($grade);
+			echo round(($sum/count($semesterNumber)),1);?></th>
 		</tr>
 		@endforeach
 	@endif

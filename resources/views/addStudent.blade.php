@@ -63,11 +63,11 @@
 	<table>
 		<tr>
 			<th text align="left">Name:</th>
-			<th><input type="text" name="name" ></th>
+			<th><input type="text" name="name" required="true"></th>
 		</tr>
 		<tr>
 			<th text align="left">Age:</th>
-			<th><input type="text" name="age" ></th>
+			<th><input type="text" name="age" required="true"></th>
 		</tr>
 	</table>
 	<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#addGrade">Add grade</button>

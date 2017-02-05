@@ -11,31 +11,30 @@ class StudentController extends Controller
 {
 	public function show(Request $request)
 	{
-		if (array_key_exists( 'optionAdd', $request->all())) {
-			$semesters = Semester::all();
-			return view('addStudent', compact('semesters'));
-		}else{
-			$combobox;
-			$isCombobox = array_key_exists( 'combobox', $request->all());
-			if ($isCombobox) {
-				$combobox = $request->all()['combobox'];
-			}else{
-				$combobox = 'All semester';
-			}
-
-			$semesters = Semester::all();
-			$student = Student::with('grades')->get();
-
-			return view('show', compact(['student', 'combobox', 'semesters']));
-		}
 		
+		$combobox;
+		$isCombobox = array_key_exists( 'combobox', $request->all());
+		if ($isCombobox) {
+			$combobox = $request->all()['combobox'];
+		}else{
+			$combobox = 'All semester';
+		}
+
+		$semesters = Semester::all();
+		$student = Student::with('grades')->get();
+
+		return view('show', compact(['student', 'combobox', 'semesters']));
+		
+
 	}
 
-	public function edit()
+	public function preEdit($student)
 	{
-		return view('editStudent');
+		$studentEdit = Student::with('grades')->where('id', '=', $student)->get();
+		// dd($studentEdit);
+		$semesters = Semester::all();
+		return view('editStudent', compact(['studentEdit', 'semesters']));
 	}
-
 	public function addForm()
 	{
 		$semesters = Semester::all();
@@ -52,38 +51,45 @@ class StudentController extends Controller
 		$studentNew->age = $age;
 		$studentNew->save();
 
-		$studentLast = Student::all()->last();
+		
+		if (!array_key_exists( 'semesterCount', $request->all())) {
+			return redirect('');
+		}
 
+		$studentLast = Student::all()->last();
 		$semesterCount = $request->all()['semesterCount'];
 		for ($i=1; $i <= $semesterCount; $i++) { 
 			if ($this->checkSemester($request, $i)) {
-				$this->addGrade($request,$i, $studentLast);
+				$semester = $request->all()['semester'.$i];
+				$semesterIdArray = Semester::where('semester', '=', $semester)->select('id')->get()->toArray();
+
+				$semester_id = $semesterIdArray[0]['id'];
+				$this->addGrade($request,$i, $studentLast, $semester_id);
 			}else{
-				$this->addSemester($request,$i);
-				$this->addGrade($request,$i, $studentLast);
+				$semester_id = $this->newSemester($request,$i);
+				$this->addGrade($request,$i, $studentLast, $semester_id);
 			}
 		}
 		return redirect('');
 	}
 
-	public function addGrade(Request $request, $i, $studentLast)
+	public function addGrade(Request $request, $i, $studentLast, $semester_id)
 	{
 		$gradeNew = new Grade();
-
 		$semester = $request->all()['semester'.$i];
 		$math = $request->all()['semester'.$semester.'MathGrade'];
 		$physics = $request->all()['semester'.$semester.'PhysicsGrade'];
 		$chemistry = $request->all()['semester'.$semester.'ChemistryGrade'];
 
 		$gradeNew->student_id = $studentLast->id;
-		$gradeNew->semester_id = $semester;
+		$gradeNew->semester_id = $semester_id;
 		$gradeNew->math = $math;
 		$gradeNew->physics = $physics;
 		$gradeNew->chemistry = $chemistry;
 		$gradeNew->save();
 	}
 
-	public function addSemester(Request $request, $i)
+	public function newSemester(Request $request, $i)
 	{
 		$semesterNew = new Semester();
 
@@ -96,6 +102,8 @@ class StudentController extends Controller
 		$semesterNew->endDate = $endDate;
 
 		$semesterNew->save();
+		$semesterLast = Semester::all()->last();
+		return $semesterLast->id;
 	}
 
 	public function checkSemester(Request $request, $i)
@@ -109,7 +117,6 @@ class StudentController extends Controller
 			if ($semesters[$i]->semester == $semester) {
 				return true;
 			}
-
 		}
 		return false;
 	}
