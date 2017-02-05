@@ -19,8 +19,12 @@
 	@endforeach
 </select>
 </h2>
-<button class="btn btn-primary btn-sm" style="margin: 10px;" onclick="this.form.submit()" name="optionAdd" value="true">Add student</button>
-<button class="btn btn-danger btn-sm" style="margin: 10px;">Delete student</button>
+<a href="/AddStudentForm">
+   <button type="button" class="btn btn-primary btn-sm" style="margin: 10px;">Add student</button>
+</a>
+<a href="/deleteStudent">
+   <button type="button" class="btn btn-danger btn-sm" style="margin: 10px;">Delete student</button>
+</a>
 <table class="table table-hover"  align="center">
 	@if(strcmp($combobox, 'All semester') == 0)
 		<tr>

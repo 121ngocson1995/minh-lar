@@ -40,21 +40,23 @@
 				endDate = semesters[i].endDate.toString();
 			}
 		}
-		cell1.innerHTML = semesterNumber;
+		cell1.innerHTML = '<input type="text" name="semester'+numRows+'" value="'+semesterNumber+'" readonly>';
 		checkSemester.push(semesterNumber);
 		if (startDate == undefined ||endDate == undefined) {
-			cell2.innerHTML = '<input type="date" name="startDate" >';
-			cell3.innerHTML = '<input type="date" name="endDate" >';
+			cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" >';
+			cell3.innerHTML = '<input type="date" name="endDate'+numRows+'" >';
 		} else {
-			cell2.innerHTML = '<input type="date" name="startDate" value="'+startDate+'" disabled>';
-			cell3.innerHTML = '<input type="date" name="endDate" value="'+endDate+'" disabled>';
+			cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" value="'+startDate+'" readonly>';
+			cell3.innerHTML = '<input type="date" name="endDate'+numRows+'" value="'+endDate+'" readonly>';
 		};
-		cell4.innerHTML = '<input type="text" name="semester'+numRows+'MathGrade" >';
-		cell5.innerHTML = '<input type="text" name="semester'+numRows+'ChemistryGrade" >';
-		cell6.innerHTML = '<input type="text" name="semester'+numRows+'PhysicsGrade" >';
+		cell4.innerHTML = '<input type="text" name="semester'+semesterNumber+'MathGrade" >';
+		cell5.innerHTML = '<input type="text" name="semester'+semesterNumber+'ChemistryGrade" >';
+		cell6.innerHTML = '<input type="text" name="semester'+semesterNumber+'PhysicsGrade" >';
 
 		document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
+		document.getElementById("semesterNumber").value= "";
 	}
+
 </script>
 
 <form action="AddStudent" method="get">
@@ -80,7 +82,7 @@
 				<td>Physics</td>
 			</tr>
 		</table>
-		<input type="text" id="semesterNumber" ><button type="button" onclick="javascript: addRow()">Add Semester</button>
+		<input type="text" id="semesterNumber" ><button type="button" onclick="javascript: addRow()" >Add Semester</button>
 		<p id="hiddenSemester"></p>
 	</div>
 	<br><input type="submit" value="Add">
