@@ -58,6 +58,23 @@
 			document.getElementById("semesterNumber").value= "";
 		}
 
+		function deleteRow(btn) {
+			var row = btn.parentNode.parentNode;
+			row.parentNode.removeChild(row);
+		}
+
+		function updateRows() {
+			var checked = $("input:checked");
+			var nbChecked = checked.size();
+			if (nbChecked == 1) {
+				checked.parent().parent().css("background", "#FFFF33");
+			}
+		}
+
+		function changeColor(o){
+        document.getElementById(o).style.backgroundColor='red';
+    }
+
 	</script>
 	
 	<form action="EditStudent" method="get">
@@ -81,19 +98,21 @@
 				<td>Physics</td>
 			</tr>
 			<?php $grades = $studentEdit[0]->grades; ?>
-			@foreach($grades as $grade)
-			<tr>
-				<td><input type="text" name="semester" value="{{ $grade->semester->semester}}"></td>
-				<td><input type="text" name="startDate" value="{{ $grade->semester->startDate}}"></td>
-				<td><input type="text" name="endDate" value="{{ $grade->semester->endDate}}"></td>
-				<td><input type="text" name="math" value="{{ $grade->math }}"></td>
-				<td><input type="text" name="chemistry" value="{{ $grade->chemistry }} "></td>
-				<td><input type="text" name="physics" value="{{ $grade->physics }} "></td>
+			@for($i=0; $i < count($grades) ; $i++)
+			<tr id="{{ $grades[$i]->semester->semester}}">
+				<td><input type="text" name="semester{{$i}}" value="{{ $grades[$i]->semester->semester}}" readonly=""></td>
+				<td><input type="text" name="startDate{{$i}}" value="{{ $grades[$i]->semester->startDate}}" readonly=""></td>
+				<td><input type="text" name="endDate{{$i}}" value="{{ $grades[$i]->semester->endDate}}" readonly=""></td>
+				<td><input type="text" name="math{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->math }}"></td>
+				<td><input type="text" name="chemistry{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->chemistry }} "></td>
+				<td><input type="text" name="physics{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->physics }} "></td>
+				<td style='border-right:none;border-left:none;border-bottom:none;border-top:none'><button type="button" class="close" onclick="changeColor({{ $grades[$i]->semester->semester}})><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></td>
 			</tr>	
-			@endforeach
+			@endfor
 		</table>
 		<input type="text" id="semesterNumber" ><button type="button" onclick="javascript: addRow()" >Add Semester</button>
 		<p id="hiddenSemester"></p>
+		<input type="text" name="student_id" hidden="true" value="{{ $studentEdit[0]->id }}">';
 	</div>
 	<br><button type="submit" class="btn btn-primary" type="button">Edit grade</button>
 </form>

@@ -11,7 +11,6 @@ class StudentController extends Controller
 {
 	public function show(Request $request)
 	{
-		
 		$combobox;
 		$isCombobox = array_key_exists( 'combobox', $request->all());
 		if ($isCombobox) {
@@ -20,7 +19,7 @@ class StudentController extends Controller
 			$combobox = 'All semester';
 		}
 
-		$semesters = Semester::all();
+		$semesters = Semester::all()->sortBy("semester");
 		$student = Student::with('grades')->get();
 
 		return view('show', compact(['student', 'combobox', 'semesters']));
@@ -35,6 +34,37 @@ class StudentController extends Controller
 		$semesters = Semester::all();
 		return view('editStudent', compact(['studentEdit', 'semesters']));
 	}
+
+	public function Edit(Request $request)
+	{
+		$student_id = $request->all()['student_id'];
+
+		$studentEdit = Student::with('grades')->find($student_id);
+
+		$name = $request->all()['name'];
+		$age = $request->all()['age'];
+
+		$studentEdit->name = $name;
+		$studentEdit->age = $age;
+		$studentEdit->save();
+		for ($i=0; $i < count($studentEdit->grades) ; $i++) { 
+			$this->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
+		}
+		if (!array_key_exists( 'semesterCount', $request->all())) {
+			$msg = 'Student with student_id '.$student_id.' is edit success. ';
+			return redirect('')->with( 'msg',$msg);
+		}else{
+			$semesterCount = $request->all()['semesterCount'];
+			for ($i=1; $i <= $semesterCount; $i++) { 
+				$semester_id = $this->newSemester($request,$i);
+				$this->addGrade($request,$i, $studentEdit, $semester_id);
+			}
+			
+		}
+
+		
+	}
+
 	public function addForm()
 	{
 		$semesters = Semester::all();
@@ -50,13 +80,14 @@ class StudentController extends Controller
 		$studentNew->name = $name;
 		$studentNew->age = $age;
 		$studentNew->save();
-
+		$studentLast = Student::all()->last();
 		
 		if (!array_key_exists( 'semesterCount', $request->all())) {
-			return redirect('');
+			$msg = 'Student added success. Your student_id is '.$studentLast->id;
+			return redirect('')->with( 'msg',$msg);
 		}
 
-		$studentLast = Student::all()->last();
+		
 		$semesterCount = $request->all()['semesterCount'];
 		for ($i=1; $i <= $semesterCount; $i++) { 
 			if ($this->checkSemester($request, $i)) {
@@ -70,7 +101,8 @@ class StudentController extends Controller
 				$this->addGrade($request,$i, $studentLast, $semester_id);
 			}
 		}
-		return redirect('');
+		$msg = 'Student added success. Your student_id is '.$studentLast->id;
+		return redirect('')->with( 'msg',$msg);
 	}
 
 	public function addGrade(Request $request, $i, $studentLast, $semester_id)
@@ -119,6 +151,22 @@ class StudentController extends Controller
 			}
 		}
 		return false;
+	}
+	public function editGrade(Request $request, $i, $studentEdit, $semester_id)
+	{
+		$gradeEdit = $studentEdit->grades[$i];
+		$semester = $gradeEdit->semester->semester;
+		$math = $request->all()['math'.$gradeEdit->semester->semester];
+
+		$physics = $request->all()['chemistry'.$gradeEdit->semester->semester];
+		$chemistry = $request->all()['physics'.$gradeEdit->semester->semester];
+
+		$gradeEdit->student_id = $studentEdit->id;
+		$gradeEdit->semester_id = $semester_id;
+		$gradeEdit->math = $math;
+		$gradeEdit->physics = $physics;
+		$gradeEdit->chemistry = $chemistry;
+		$gradeEdit->save();
 	}
 
 }

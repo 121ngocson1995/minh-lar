@@ -6,6 +6,11 @@
 @stop
 
 @section('table')
+@if (session('msg'))
+    <div class="alert alert-success">
+        {{ session('msg') }}
+    </div>
+@endif
 <form action="ListByRequest" method="get">
 <h2 align="center">Choose a semester
 <select name="combobox" onchange="this.form.submit()">

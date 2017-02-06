@@ -14,6 +14,7 @@
 Route::get('/', 'StudentController@show');
 Route::get('/ListByRequest', 'StudentController@show');
 Route::get('/students/{student}/edit', 'StudentController@preEdit');
+Route::get('/students/{student}/EditStudent', 'StudentController@edit');
 Route::get('/AddStudent', 'StudentController@add');
 Route::get('/AddStudentForm', 'StudentController@addForm');
 Auth::routes();
