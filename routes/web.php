@@ -17,6 +17,7 @@ Route::get('/students/{student}/edit', 'StudentController@preEdit');
 Route::get('/students/{student}/EditStudent', 'StudentController@edit');
 Route::get('/AddStudent', 'StudentController@add');
 Route::get('/AddStudentForm', 'StudentController@addForm');
+Route::post('/DeleteStudent', 'StudentController@delete');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');

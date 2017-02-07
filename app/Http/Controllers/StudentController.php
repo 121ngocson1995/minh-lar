@@ -30,7 +30,6 @@ class StudentController extends Controller
 	public function preEdit($student)
 	{
 		$studentEdit = Student::with('grades')->where('id', '=', $student)->get();
-		// dd($studentEdit);
 		$semesters = Semester::all();
 		return view('editStudent', compact(['studentEdit', 'semesters']));
 	}
@@ -152,6 +151,7 @@ class StudentController extends Controller
 		}
 		return false;
 	}
+
 	public function editGrade(Request $request, $i, $studentEdit, $semester_id)
 	{
 		$gradeEdit = $studentEdit->grades[$i];
@@ -167,6 +167,23 @@ class StudentController extends Controller
 		$gradeEdit->physics = $physics;
 		$gradeEdit->chemistry = $chemistry;
 		$gradeEdit->save();
+	}
+
+	public function delete(Request $request)
+	{
+		$toBeDeleted = array();
+		foreach($request->all() as $key=>$val)
+	  	{
+	  		if (strcmp($val, 'checked') == 0) {
+	  			$toBeDeleted[] = $key;
+	  		}
+	  	} 
+
+		for ($i=0; $i < count($toBeDeleted); $i++) { 
+			Student::where('id', $toBeDeleted[$i])->delete();
+		}
+		
+		return redirect('');
 	}
 
 }
