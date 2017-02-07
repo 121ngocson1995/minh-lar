@@ -6,8 +6,7 @@
 @stop
 
 @section('table')
-<form action="ListByRequest" method="post">
-{{ csrf_field() }}
+<form action="ListByRequest" method="get">
 <h2 align="center">Choose a semester
 <select name="combobox" onchange="this.form.submit()">
 	<option value="All semester" >All semester</option>
@@ -20,15 +19,12 @@
 	@endforeach
 </select>
 </h2>
-@if (Auth::guest())
-@else
 <a href="/AddStudentForm">
    <button type="button" class="btn btn-primary btn-sm" style="margin: 10px;">Add student</button>
 </a>
-<a href="/DeleteStudent">
-   <button type="submit" class="btn btn-danger btn-sm"  value="Delete" name = "delete" style="margin: 10px;">Delete student</button>
+<a href="/deleteStudent">
+   <button type="button" class="btn btn-danger btn-sm" style="margin: 10px;">Delete student</button>
 </a>
-@endif
 <table class="table table-hover"  align="center">
 	@if(strcmp($combobox, 'All semester') == 0)
 		<tr>
@@ -43,18 +39,9 @@
 		</tr>
 		@foreach ($student as $student)
 		<tr>
-			<th><input type="checkbox" name="{{ $student->id }}" value="checked"></th>
-			@if (isset($_GET['{{ $student->id }}'])) {
-			
-			} 
-			@endif
-			
+			<th><input type="checkbox" name="" value=""></th>
 			<th>{{ $student->id }} </th>
-			@if (Auth::guest())
-			<th><a>{{ $student->name }}</a></th>
-			@else
 			<th><a href="students/{{ $student->id }}/edit">{{ $student->name }}</a></th>
-			@endif
 			<th>{{ $student->age }}</th>
 			<?php $grade = $student->grades; ?>
 			@foreach($semesters as $semester)
@@ -113,15 +100,4 @@
 	
 </table>
 </form>
-
-
-<script type="text/javascript">
-    
-    var form = document.forms[1];
-    $(form).find("button[value='Delete']").click(function() {
-        form.operation = this.value;
-        form.action = 'DeleteStudent' ;
-        form.submit();
-    });
-</script>
 @stop
