@@ -9,6 +9,7 @@
 <body>
 	<script langauge="JavaScript">
 		var checkSemester = new Array();
+		var rowOfSemesterAdd = 0;
 		function addRow()
 		{
 			var semesters = <?php echo json_encode($semesters->toArray()); ?>;
@@ -23,6 +24,7 @@
 					return;
 				}
 			}
+			rowOfSemesterAdd = rowOfSemesterAdd + 1;
 			var arrTables = document.getElementById('gradeTable');
 			var oRows = arrTables.rows;
 			var numRows = oRows.length;
@@ -41,20 +43,20 @@
 					endDate = semesters[i].endDate.toString();
 				}
 			}
-			cell1.innerHTML = '<input type="text" name="semester'+numRows+'" value="'+semesterNumber+'" readonly>';
+			cell1.innerHTML = '<input type="text" name="semesterAdd'+rowOfSemesterAdd+'" value="'+semesterNumber+'" readonly>';
 			checkSemester.push(semesterNumber);
 			if (startDate == undefined ||endDate == undefined) {
-				cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" >';
-				cell3.innerHTML = '<input type="date" name="endDate'+numRows+'" >';
+				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" >';
+				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" >';
 			} else {
-				cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" value="'+startDate+'" readonly>';
-				cell3.innerHTML = '<input type="date" name="endDate'+numRows+'" value="'+endDate+'" readonly>';
+				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" value="'+startDate+'" readonly>';
+				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" value="'+endDate+'" readonly>';
 			};
-			cell4.innerHTML = '<input type="text" name="semester'+semesterNumber+'MathGrade" >';
-			cell5.innerHTML = '<input type="text" name="semester'+semesterNumber+'ChemistryGrade" >';
-			cell6.innerHTML = '<input type="text" name="semester'+semesterNumber+'PhysicsGrade" >';
+			cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" >';
+			cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" >';
+			cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" >';
 
-			document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
+			document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+rowOfSemesterAdd+'">';
 			document.getElementById("semesterNumber").value= "";
 		}
 
@@ -112,7 +114,7 @@
 		</table>
 		<input type="text" id="semesterNumber" ><button type="button" onclick="javascript: addRow()" >Add Semester</button>
 		<p id="hiddenSemester"></p>
-		<input type="text" name="student_id" hidden="true" value="{{ $studentEdit[0]->id }}">';
+		<input type="text" name="student_id" hidden="true" value="{{ $studentEdit[0]->id }}">
 	</div>
 	<br><button type="submit" class="btn btn-primary" type="button">Edit grade</button>
 </form>

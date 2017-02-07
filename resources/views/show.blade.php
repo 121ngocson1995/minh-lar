@@ -64,7 +64,7 @@
 			<?php $grade = $student->grades; ?>
 			@foreach($semesters as $semester)
 			<th>@for ($i=0; $i < count($grade) ; $i++) 
-					@if ($grade[$i]->semester_id == $semester->semester)
+					@if ($grade[$i]->semester_id == $semester->id)
 						Math: {{ $grade[$i]->math }} <br>
 						Chemistry: {{ $grade[$i]->chemistry }} <br>
 						Physic: {{ $grade[$i]->physics }} <br>
@@ -72,7 +72,8 @@
 					@endif
 				@endfor</th>
 			@endforeach
-			<th><?php $sum = 0;?>
+			<th>
+			<?php $sum = 0;?>
 			@for ($i=0; $i < count($grade) ; $i++)
 				<?php $sum = $sum + ($grade[$i]->physics + $grade[$i]->math + $grade[$i]->chemistry)/3 ?>
 			@endfor
@@ -81,8 +82,9 @@
 			}else{
 				$semesterNumber = 1;
 			}
-			$semesterNumber = count($grade);
-			echo round(($sum/count($semesterNumber)),1);?></th>
+			echo round(($sum/$semesterNumber),1);?>
+				
+			</th>
 		</tr>
 		@endforeach
 	@endif

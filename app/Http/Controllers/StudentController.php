@@ -55,14 +55,27 @@ class StudentController extends Controller
 		}else{
 			$semesterCount = $request->all()['semesterCount'];
 			for ($i=1; $i <= $semesterCount; $i++) { 
-				$semester_id = $this->newSemester($request,$i);
-				$this->addGrade($request,$i, $studentEdit, $semester_id);
+				if ($this->checkSemester($request, $i)) {
+					$semester = $request->all()['semesterAdd'.$i];
+
+					$semesterIdArray = Semester::where('semester', '=', $semester)->select('id')->get()->toArray();
+
+					$semester_id = $semesterIdArray[0]['id'];
+					$this->addGrade($request,$i, $studentEdit, $semester_id);
+				}else{
+					$semester_id = $this->newSemester($request,$i);
+					$this->addGrade($request,$i, $studentEdit, $semester_id);
+				}
 			}
 			
+			$msg = 'Student with student_id '.$student_id.' is edit success. ';
+			return redirect('')->with( 'msg',$msg);
 		}
 
-		
 	}
+
+
+	
 
 	public function addForm()
 	{
@@ -90,7 +103,8 @@ class StudentController extends Controller
 		$semesterCount = $request->all()['semesterCount'];
 		for ($i=1; $i <= $semesterCount; $i++) { 
 			if ($this->checkSemester($request, $i)) {
-				$semester = $request->all()['semester'.$i];
+				$semester = $request->all()['semesterAdd'.$i];
+
 				$semesterIdArray = Semester::where('semester', '=', $semester)->select('id')->get()->toArray();
 
 				$semester_id = $semesterIdArray[0]['id'];
@@ -107,11 +121,10 @@ class StudentController extends Controller
 	public function addGrade(Request $request, $i, $studentLast, $semester_id)
 	{
 		$gradeNew = new Grade();
-		$semester = $request->all()['semester'.$i];
-		$math = $request->all()['semester'.$semester.'MathGrade'];
-		$physics = $request->all()['semester'.$semester.'PhysicsGrade'];
-		$chemistry = $request->all()['semester'.$semester.'ChemistryGrade'];
-
+		$semester = $request->all()['semesterAdd'.$i];
+		$math = $request->all()['semesterAdd'.$semester.'MathGrade'];
+		$physics = $request->all()['semesterAdd'.$semester.'PhysicsGrade'];
+		$chemistry = $request->all()['semesterAdd'.$semester.'ChemistryGrade'];
 		$gradeNew->student_id = $studentLast->id;
 		$gradeNew->semester_id = $semester_id;
 		$gradeNew->math = $math;
@@ -124,10 +137,9 @@ class StudentController extends Controller
 	{
 		$semesterNew = new Semester();
 
-		$semester = $request->all()['semester'.$i];
-		$startDate = $request->all()['startDate'.$i];
-		$endDate = $request->all()['endDate'.$i];
-
+		$semester = $request->all()['semesterAdd'.$i];
+		$startDate = $request->all()['startDateAdd'.$i];
+		$endDate = $request->all()['endDateAdd'.$i];
 		$semesterNew->semester = $semester;
 		$semesterNew->startDate = $startDate;
 		$semesterNew->endDate = $endDate;
@@ -143,7 +155,7 @@ class StudentController extends Controller
 		$semesters->toArray();
 
 
-		$semester = $request->all()['semester'.$i];
+		$semester = $request->all()['semesterAdd'.$i];
 		for ($i=0; $i < count($semesters) ; $i++) { 
 			if ($semesters[$i]->semester == $semester) {
 				return true;
@@ -173,11 +185,11 @@ class StudentController extends Controller
 	{
 		$toBeDeleted = array();
 		foreach($request->all() as $key=>$val)
-	  	{
-	  		if (strcmp($val, 'checked') == 0) {
-	  			$toBeDeleted[] = $key;
-	  		}
-	  	} 
+		{
+			if (strcmp($val, 'checked') == 0) {
+				$toBeDeleted[] = $key;
+			}
+		} 
 
 		for ($i=0; $i < count($toBeDeleted); $i++) { 
 			Student::where('id', $toBeDeleted[$i])->delete();

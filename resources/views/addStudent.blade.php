@@ -40,7 +40,7 @@
 				endDate = semesters[i].endDate.toString();
 			}
 		}
-		cell1.innerHTML = '<input type="text" name="semester'+numRows+'" value="'+semesterNumber+'" readonly>';
+		cell1.innerHTML = '<input type="text" name="semesterAdd'+numRows+'" value="'+semesterNumber+'" readonly>';
 		checkSemester.push(semesterNumber);
 		if (startDate == undefined ||endDate == undefined) {
 			cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" >';
@@ -49,9 +49,9 @@
 			cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" value="'+startDate+'" readonly>';
 			cell3.innerHTML = '<input type="date" name="endDate'+numRows+'" value="'+endDate+'" readonly>';
 		};
-		cell4.innerHTML = '<input type="text" name="semester'+semesterNumber+'MathGrade" >';
-		cell5.innerHTML = '<input type="text" name="semester'+semesterNumber+'ChemistryGrade" >';
-		cell6.innerHTML = '<input type="text" name="semester'+semesterNumber+'PhysicsGrade" >';
+		cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" >';
+		cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" >';
+		cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" >';
 
 		document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
 		document.getElementById("semesterNumber").value= "";
