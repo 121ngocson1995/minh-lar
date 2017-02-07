@@ -120,5 +120,21 @@ class StudentController extends Controller
 		}
 		return false;
 	}
+	public function delete(Request $request)
+	{
+		$toBeDeleted = array();
+		foreach($request->all() as $key=>$val)
+	  	{
+	  		if (strcmp($val, 'checked') == 0) {
+	  			$toBeDeleted[] = $key;
+	  		}
+	  	} 
+
+		for ($i=0; $i < count($toBeDeleted); $i++) { 
+			Student::where('id', $toBeDeleted[$i])->delete();
+		}
+		
+		return redirect('');
+	}
 
 }
