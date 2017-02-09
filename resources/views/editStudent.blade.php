@@ -5,11 +5,21 @@
 
 	<link rel="stylesheet" href="{{ URL::asset('css/bootstrap.min.css') }}">
 	<script src="{{ URL::asset('js/bootstrap.min') }}"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
+<style type="text/css">
+	.inputtrans {
+		background-color: transparent;
+	}
+
+
+</style>
+
 	<script langauge="JavaScript">
 		var checkSemester = new Array();
 		var rowOfSemesterAdd = 0;
+		var deleteSemester = new Array();
 		function addRow()
 		{
 			var semesters = <?php echo json_encode($semesters->toArray()); ?>;
@@ -60,26 +70,24 @@
 			document.getElementById("semesterNumber").value= "";
 		}
 
-		function deleteRow(btn) {
-			var row = btn.parentNode.parentNode;
-			row.parentNode.removeChild(row);
-		}
 
-		function updateRows() {
-			var checked = $("input:checked");
-			var nbChecked = checked.size();
-			if (nbChecked == 1) {
-				checked.parent().parent().css("background", "#FFFF33");
-			}
-		}
 
 		function changeColor(o){
-        document.getElementById(o).style.backgroundColor='red';
-    }
+			if (document.getElementById('row'+o).style.backgroundColor==="transparent" || document.getElementById('row'+o).style.backgroundColor==="") {
+				document.getElementById('row'+o).style.backgroundColor='rgba(255, 0, 0, 0.5)';
+				deleteSemester.push(o);
+			}else{
+				document.getElementById('row'+o).style.backgroundColor='transparent';
+				var index = deleteSemester.indexOf(o);
+				deleteSemester.splice(index, 1 );
 
+			}
+        }
+
+        
 	</script>
 	
-	<form action="EditStudent" method="get">
+	<form id="EditStudent" action="EditStudent" method="get">
 		<table>
 			<tr>
 				<th text align="left">Name:</th>
@@ -101,14 +109,14 @@
 			</tr>
 			<?php $grades = $studentEdit[0]->grades; ?>
 			@for($i=0; $i < count($grades) ; $i++)
-			<tr id="{{ $grades[$i]->semester->semester}}">
-				<td><input type="text" name="semester{{$i}}" value="{{ $grades[$i]->semester->semester}}" readonly=""></td>
-				<td><input type="text" name="startDate{{$i}}" value="{{ $grades[$i]->semester->startDate}}" readonly=""></td>
-				<td><input type="text" name="endDate{{$i}}" value="{{ $grades[$i]->semester->endDate}}" readonly=""></td>
-				<td><input type="text" name="math{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->math }}"></td>
-				<td><input type="text" name="chemistry{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->chemistry }} "></td>
-				<td><input type="text" name="physics{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->physics }} "></td>
-				<td style='border-right:none;border-left:none;border-bottom:none;border-top:none'><button type="button" class="close" onclick="changeColor({{ $grades[$i]->semester->semester}})><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></td>
+			<tr id="row{{$i}}">
+				<td><input type="text" class="inputtrans" name="semester{{$i}}" value="{{ $grades[$i]->semester->semester}}" readonly=""></td>
+				<td><input type="text" class="inputtrans" name="startDate{{$i}}" value="{{ $grades[$i]->semester->startDate}}" readonly=""></td>
+				<td><input type="text" class="inputtrans" name="endDate{{$i}}" value="{{ $grades[$i]->semester->endDate}}" readonly=""></td>
+				<td><input type="text" class="inputtrans" name="math{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->math }}"></td>
+				<td><input type="text" class="inputtrans" name="chemistry{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->chemistry }} "></td>
+				<td><input type="text" class="inputtrans" name="physics{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->physics }} "></td>
+				<td style='border-right:none;border-left:none;border-bottom:none;border-top:none'><button type="button" class="close" onclick="changeColor({{$i}})"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></td>
 			</tr>	
 			@endfor
 		</table>
@@ -118,5 +126,16 @@
 	</div>
 	<br><button type="submit" class="btn btn-primary" type="button">Edit grade</button>
 </form>
+
+<script type="text/javascript">
+	$("#EditStudent").submit( function(eventObj) {
+			$('<input />').attr('type', 'hidden')
+				.attr('name', "semesterDelete")
+				.attr('value', deleteSemester.toString())
+				.appendTo('#EditStudent');
+			return true;
+		});
+</script>
+
 </body>
 </html>

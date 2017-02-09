@@ -43,11 +43,21 @@ class StudentController extends Controller
 		$name = $request->all()['name'];
 		$age = $request->all()['age'];
 
+		$semesterDelete = $request->all()['semesterDelete'];
+		$semesterDelete = explode(",",$semesterDelete);
+
 		$studentEdit->name = $name;
 		$studentEdit->age = $age;
 		$studentEdit->save();
 		for ($i=0; $i < count($studentEdit->grades) ; $i++) { 
-			$this->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
+			for ($j=0; $j < count($semesterDelete) ; $j++) { 
+				if ($semesterDelete[$j] == $i) {
+					$this->deleteGrade($i, $studentEdit, $studentEdit->grades[$semesterDelete[$j]]->semester_id);
+					continue;
+				}
+				$this->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
+			}
+			
 		}
 		if (!array_key_exists( 'semesterCount', $request->all())) {
 			$msg = 'Student with student_id '.$student_id.' is edit success. ';
@@ -133,6 +143,11 @@ class StudentController extends Controller
 		$gradeNew->save();
 	}
 
+	public function deleteGrade($i, $studentEdit, $semester_id)
+	{	
+		$deleteGrade = Grade::where('student_id',$studentEdit->id)->where('semester_id', $semester_id)->delete();
+	}
+
 	public function newSemester(Request $request, $i)
 	{
 		$semesterNew = new Semester();
@@ -166,6 +181,7 @@ class StudentController extends Controller
 
 	public function editGrade(Request $request, $i, $studentEdit, $semester_id)
 	{
+
 		$gradeEdit = $studentEdit->grades[$i];
 		$semester = $gradeEdit->semester->semester;
 		$math = $request->all()['math'.$gradeEdit->semester->semester];
