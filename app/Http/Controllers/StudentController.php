@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\GradeController;
 use App\Student;
 use App\Semester;
 use App\Grade;
 use DB;
 class StudentController extends Controller
 {
+	
 	public function show(Request $request)
 	{
 		$combobox;
@@ -52,10 +55,10 @@ class StudentController extends Controller
 		for ($i=0; $i < count($studentEdit->grades) ; $i++) { 
 			for ($j=0; $j < count($semesterDelete) ; $j++) { 
 				if ($semesterDelete[$j] == $i) {
-					$this->deleteGrade($i, $studentEdit, $studentEdit->grades[$semesterDelete[$j]]->semester_id);
+					(new GradeController)->deleteGrade($i, $studentEdit, $studentEdit->grades[$semesterDelete[$j]]->semester_id);
 					continue;
 				}
-				$this->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
+				(new GradeController)->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
 			}
 			
 		}
@@ -65,16 +68,16 @@ class StudentController extends Controller
 		}else{
 			$semesterCount = $request->all()['semesterCount'];
 			for ($i=1; $i <= $semesterCount; $i++) { 
-				if ($this->checkSemester($request, $i)) {
+				if ((new SemesterController)->checkSemester($request, $i)) {
 					$semester = $request->all()['semesterAdd'.$i];
 
 					$semesterIdArray = Semester::where('semester', '=', $semester)->select('id')->get()->toArray();
 
 					$semester_id = $semesterIdArray[0]['id'];
-					$this->addGrade($request,$i, $studentEdit, $semester_id);
+					(new GradeController)->addGrade($request,$i, $studentEdit, $semester_id);
 				}else{
-					$semester_id = $this->newSemester($request,$i);
-					$this->addGrade($request,$i, $studentEdit, $semester_id);
+					$semester_id = (new SemesterController)->newSemester($request,$i);
+					(new GradeController)->addGrade($request,$i, $studentEdit, $semester_id);
 				}
 			}
 			
@@ -112,90 +115,23 @@ class StudentController extends Controller
 		
 		$semesterCount = $request->all()['semesterCount'];
 		for ($i=1; $i <= $semesterCount; $i++) { 
-			if ($this->checkSemester($request, $i)) {
+			if ((new SemesterController)->checkSemester($request, $i)) {
 				$semester = $request->all()['semesterAdd'.$i];
 
 				$semesterIdArray = Semester::where('semester', '=', $semester)->select('id')->get()->toArray();
 
 				$semester_id = $semesterIdArray[0]['id'];
-				$this->addGrade($request,$i, $studentLast, $semester_id);
+				(new GradeController)->addGrade($request,$i, $studentLast, $semester_id);
 			}else{
-				$semester_id = $this->newSemester($request,$i);
-				$this->addGrade($request,$i, $studentLast, $semester_id);
+				$semester_id = (new SemesterController)->newSemester($request,$i);
+				(new GradeController)->addGrade($request,$i, $studentLast, $semester_id);
 			}
 		}
 		$msg = 'Student added success. Your student_id is '.$studentLast->id;
 		return redirect('')->with( 'msg',$msg);
 	}
 
-	public function addGrade(Request $request, $i, $studentLast, $semester_id)
-	{
-		$gradeNew = new Grade();
-		$semester = $request->all()['semesterAdd'.$i];
-		$math = $request->all()['semesterAdd'.$semester.'MathGrade'];
-		$physics = $request->all()['semesterAdd'.$semester.'PhysicsGrade'];
-		$chemistry = $request->all()['semesterAdd'.$semester.'ChemistryGrade'];
-		$gradeNew->student_id = $studentLast->id;
-		$gradeNew->semester_id = $semester_id;
-		$gradeNew->math = $math;
-		$gradeNew->physics = $physics;
-		$gradeNew->chemistry = $chemistry;
-		$gradeNew->save();
-	}
-
-	public function deleteGrade($i, $studentEdit, $semester_id)
-	{	
-		$deleteGrade = Grade::where('student_id',$studentEdit->id)->where('semester_id', $semester_id)->delete();
-	}
-
-	public function newSemester(Request $request, $i)
-	{
-		$semesterNew = new Semester();
-
-		$semester = $request->all()['semesterAdd'.$i];
-		$startDate = $request->all()['startDateAdd'.$i];
-		$endDate = $request->all()['endDateAdd'.$i];
-		$semesterNew->semester = $semester;
-		$semesterNew->startDate = $startDate;
-		$semesterNew->endDate = $endDate;
-
-		$semesterNew->save();
-		$semesterLast = Semester::all()->last();
-		return $semesterLast->id;
-	}
-
-	public function checkSemester(Request $request, $i)
-	{
-		$semesters = Semester::all();
-		$semesters->toArray();
-
-
-		$semester = $request->all()['semesterAdd'.$i];
-		for ($i=0; $i < count($semesters) ; $i++) { 
-			if ($semesters[$i]->semester == $semester) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public function editGrade(Request $request, $i, $studentEdit, $semester_id)
-	{
-
-		$gradeEdit = $studentEdit->grades[$i];
-		$semester = $gradeEdit->semester->semester;
-		$math = $request->all()['math'.$gradeEdit->semester->semester];
-
-		$physics = $request->all()['chemistry'.$gradeEdit->semester->semester];
-		$chemistry = $request->all()['physics'.$gradeEdit->semester->semester];
-
-		$gradeEdit->student_id = $studentEdit->id;
-		$gradeEdit->semester_id = $semester_id;
-		$gradeEdit->math = $math;
-		$gradeEdit->physics = $physics;
-		$gradeEdit->chemistry = $chemistry;
-		$gradeEdit->save();
-	}
+	
 
 	public function delete(Request $request)
 	{
