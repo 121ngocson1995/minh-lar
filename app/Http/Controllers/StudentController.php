@@ -37,11 +37,12 @@ class StudentController extends Controller
 		return view('editStudent', compact(['studentEdit', 'semesters']));
 	}
 
-	public function Edit(Request $request)
+	public function edit(Request $request)
 	{
 		$student_id = $request->all()['student_id'];
 
 		$studentEdit = Student::with('grades')->find($student_id);
+
 
 		$name = $request->all()['name'];
 		$age = $request->all()['age'];
@@ -52,16 +53,34 @@ class StudentController extends Controller
 		$studentEdit->name = $name;
 		$studentEdit->age = $age;
 		$studentEdit->save();
+
+		// for ($i=0; $i < count($studentEdit->grades) ; $i++) { 
+		// 	for ($j=0; $j < count($semesterDelete) ; $j++) { 
+		// 		if ($semesterDelete[$j] == $i) {
+		// 			(new GradeController)->deleteGrade($i, $studentEdit, $studentEdit->grades[$semesterDelete[$j]]->semester_id);
+		// 			continue;
+		// 		}
+		// 		(new GradeController)->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
+		// 	}
+			
+		// }
+
+
+
 		for ($i=0; $i < count($studentEdit->grades) ; $i++) { 
-			for ($j=0; $j < count($semesterDelete) ; $j++) { 
-				if ($semesterDelete[$j] == $i) {
-					(new GradeController)->deleteGrade($i, $studentEdit, $studentEdit->grades[$semesterDelete[$j]]->semester_id);
-					continue;
+			if (strcmp(trim($semesterDelete[0]), '') != 0) {
+				for ($j=0; $j < count($semesterDelete) ; $j++) { 
+					if ($semesterDelete[$j] == $i) {
+						(new GradeController)->deleteGrade($i, $studentEdit, $studentEdit->grades[$semesterDelete[$j]]->semester_id);
+					}
 				}
-				(new GradeController)->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
 			}
+			(new GradeController)->editGrade($request,$i, $studentEdit, $studentEdit->grades[$i]->semester_id);
 			
 		}
+
+
+
 		if (!array_key_exists( 'semesterCount', $request->all())) {
 			$msg = 'Student with student_id '.$student_id.' is edit success. ';
 			return redirect('')->with( 'msg',$msg);
@@ -102,13 +121,19 @@ class StudentController extends Controller
 		$name = $request->all()['name'];
 		$age = $request->all()['age'];
 
-		$studentNew->name = $name;
-		$studentNew->age = $age;
-		$studentNew->save();
-		$studentLast = Student::all()->last();
+		// $studentNew->name = $name;
+		// $studentNew->age = $age;
+		// $studentNew->save();
+		// $studentLast = Student::all()->last();
+
+		$studentNew = [
+			'name' => $name,
+			'age' => $age
+		];
+		$studentLast = Student::create($studentNew);
 		
 		if (!array_key_exists( 'semesterCount', $request->all())) {
-			$msg = 'Student added success. Your student_id is '.$studentLast->id;
+			$msg = 'Student added successfully. '.$studentLast->name.'\'s student ID is '.$studentLast->id;
 			return redirect('')->with( 'msg',$msg);
 		}
 
@@ -127,7 +152,7 @@ class StudentController extends Controller
 				(new GradeController)->addGrade($request,$i, $studentLast, $semester_id);
 			}
 		}
-		$msg = 'Student added success. Your student_id is '.$studentLast->id;
+		$msg = 'Student added successfully. '.$studentLast->name.'\'s student ID is '.$studentLast->id;
 		return redirect('')->with( 'msg',$msg);
 	}
 
@@ -147,7 +172,8 @@ class StudentController extends Controller
 			Student::where('id', $toBeDeleted[$i])->delete();
 		}
 		
-		return redirect('');
+		$msg = 'Delete successfully';
+		return redirect('')->with( 'msg',$msg);
 	}
 
 }

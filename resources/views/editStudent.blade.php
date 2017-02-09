@@ -8,13 +8,35 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-<style type="text/css">
-	.inputtrans {
-		background-color: transparent;
-	}
+	<style type="text/css">
+		.inputtrans {
+			background-color: transparent;
+		}
 
+		input.inputtrans {
+			padding: 10px;
+			border: none;
+			border-bottom: solid 2px #f7f7f7;
+			transition: border 0.3s;
+			text-align: center;
+		}
 
-</style>
+		.inputtrans:focus {
+			outline: none;
+			color: cornflowerblue;
+			border-bottom: solid 2px #c9c9c9;
+		}
+
+		.toBeDel {
+			background-color: rgba(255, 0, 0, 0.5) !important;
+		}
+
+		.toBeDel>td>input {
+			color: white;
+			border-bottom: solid 2px transparent;
+			transition: color 0.3s;
+		}
+	</style>
 
 	<script langauge="JavaScript">
 		var checkSemester = new Array();
@@ -53,89 +75,94 @@
 					endDate = semesters[i].endDate.toString();
 				}
 			}
-			cell1.innerHTML = '<input type="text" name="semesterAdd'+rowOfSemesterAdd+'" value="'+semesterNumber+'" readonly>';
+			cell1.innerHTML = '<input type="text" name="semesterAdd'+rowOfSemesterAdd+'" value="'+semesterNumber+'" style="width: 30px; margin-left: 15px;" readonly required>';
 			checkSemester.push(semesterNumber);
 			if (startDate == undefined ||endDate == undefined) {
-				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" >';
-				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" >';
+				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" style="width: 95px;" required>';
+				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" style="width: 95px;" required>';
 			} else {
-				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" value="'+startDate+'" readonly>';
-				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" value="'+endDate+'" readonly>';
+				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" value="'+startDate+'" readonly required>';
+				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" value="'+endDate+'" readonly required>';
 			};
-			cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" >';
-			cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" >';
-			cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" >';
+			cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" maxlength="4" style="width: 50px;" required>';
+			cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" maxlength="4" style="width: 50px;" required>';
+			cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" maxlength="4" style="width: 50px;" required>';
 
-			document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+rowOfSemesterAdd+'">';
+			document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+rowOfSemesterAdd+' required">';
 			document.getElementById("semesterNumber").value= "";
 		}
 
 
 
-		function changeColor(o){
-			if (document.getElementById('row'+o).style.backgroundColor==="transparent" || document.getElementById('row'+o).style.backgroundColor==="") {
-				document.getElementById('row'+o).style.backgroundColor='rgba(255, 0, 0, 0.5)';
-				deleteSemester.push(o);
-			}else{
-				document.getElementById('row'+o).style.backgroundColor='transparent';
-				var index = deleteSemester.indexOf(o);
-				deleteSemester.splice(index, 1 );
+		function changeColor(o, delBtn){
+			// if (document.getElementById('row'+o).style.backgroundColor==="transparent" || document.getElementById('row'+o).style.backgroundColor==="") {
+			// 	document.getElementById('row'+o).style.backgroundColor='rgba(255, 0, 0, 0.5)';
+			// 	deleteSemester.push(o);
+			// }else{
+			// 	document.getElementById('row'+o).style.backgroundColor='transparent';
+			// 	var index = deleteSemester.indexOf(o);
+			// 	deleteSemester.splice(index, 1 );
 
-			}
+			// }
+
+
+			$(delBtn).closest('tr').toggleClass("toBeDel");
+			deleteSemester.includes(o) ? deleteSemester.splice(deleteSemester.indexOf(o), 1) : deleteSemester.push(o);
         }
 
         
 	</script>
 	
+	
 	<form id="EditStudent" action="EditStudent" method="get">
-		<table>
+		<table class="table table-hover">
 			<tr>
 				<th text align="left">Name:</th>
-				<th><input type="text" name="name" value="{{ $studentEdit[0]->name }}"></th>
+				<th><input type="text" class="inputtrans" name="name" value="{{ $studentEdit[0]->name }}"></th>
 			</tr>
 			<tr>
 				<th text align="left">Age:</th>
-				<th><input type="text" name="age" value="{{ $studentEdit[0]->age }}"></th>
+				<th><input type="text" name="age" class="inputtrans" value="{{ $studentEdit[0]->age }}"></th>
 			</tr>
 		</table>
-		<table id="gradeTable" border="1">
+		<table class="table table-hover" id="gradeTable">
 			<tr>
-				<td>Semester</td>
-				<td>Start date</td>
-				<td>End date</td>
-				<td>Math</td>
-				<td>Chemistry</td>
-				<td>Physics</td>
+				<th>Semester</th>
+				<th>Start date</th>
+				<th>End date</th>
+				<th>Math</th>
+				<th>Chemistry</th>
+				<th>Physics</th>
+				<th></th>
 			</tr>
 			<?php $grades = $studentEdit[0]->grades; ?>
 			@for($i=0; $i < count($grades) ; $i++)
 			<tr id="row{{$i}}">
-				<td><input type="text" class="inputtrans" name="semester{{$i}}" value="{{ $grades[$i]->semester->semester}}" readonly=""></td>
-				<td><input type="text" class="inputtrans" name="startDate{{$i}}" value="{{ $grades[$i]->semester->startDate}}" readonly=""></td>
-				<td><input type="text" class="inputtrans" name="endDate{{$i}}" value="{{ $grades[$i]->semester->endDate}}" readonly=""></td>
-				<td><input type="text" class="inputtrans" name="math{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->math }}"></td>
-				<td><input type="text" class="inputtrans" name="chemistry{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->chemistry }} "></td>
-				<td><input type="text" class="inputtrans" name="physics{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->physics }} "></td>
-				<td style='border-right:none;border-left:none;border-bottom:none;border-top:none'><button type="button" class="close" onclick="changeColor({{$i}})"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></td>
+				<td><input type="text" class="inputtrans" name="semester{{$i}}" value="{{ $grades[$i]->semester->semester}}" style="width: 30px; margin-left: 15px;" readonly="" required=""></td>
+				<td><input type="text" class="inputtrans" name="startDate{{$i}}" value="{{ $grades[$i]->semester->startDate}}" style="width: 95px;" readonly="" required=""></td>
+				<td><input type="text" class="inputtrans" name="endDate{{$i}}" value="{{ $grades[$i]->semester->endDate}}" style="width: 95px;" readonly="" required=""></td>
+				<td><input type="text" class="inputtrans" name="math{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->math }}" maxlength="4" style="width: 50px;" required=""></td>
+				<td><input type="text" class="inputtrans" name="chemistry{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->chemistry }}" maxlength="4" style="width: 50px;" required=""></td>
+				<td><input type="text" class="inputtrans" name="physics{{ $grades[$i]->semester->semester}}" value="{{ $grades[$i]->physics }}" maxlength="4" style="width: 50px;" required=""></td>
+				<td style="vertical-align: middle;"><button type="button" class="close" onclick="changeColor({{$i}}, this)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></td>
 			</tr>	
 			@endfor
 		</table>
 		<input type="text" id="semesterNumber" ><button type="button" onclick="javascript: addRow()" >Add Semester</button>
 		<p id="hiddenSemester"></p>
 		<input type="text" name="student_id" hidden="true" value="{{ $studentEdit[0]->id }}">
-	</div>
-	<br><button type="submit" class="btn btn-primary" type="button">Edit grade</button>
-</form>
+		<br><button type="submit" class="btn btn-primary" type="button">Edit grade</button>
+	</form>
 
-<script type="text/javascript">
-	$("#EditStudent").submit( function(eventObj) {
-			$('<input />').attr('type', 'hidden')
-				.attr('name', "semesterDelete")
-				.attr('value', deleteSemester.toString())
-				.appendTo('#EditStudent');
-			return true;
-		});
-</script>
+	<script type="text/javascript">
+		$("#EditStudent").submit( function(eventObj) {
+				$('<input />').attr('type', 'hidden')
+					.attr('name', "semesterDelete")
+					.attr('value', deleteSemester.toString())
+					.appendTo('#EditStudent');
+				return true;
+			});
+	</script>
 
 </body>
 </html>
