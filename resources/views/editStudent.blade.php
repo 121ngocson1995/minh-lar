@@ -148,7 +148,8 @@
 			</tr>	
 			@endfor
 		</table>
-		<input type="text" id="semesterNumber" ><button type="button" onclick="javascript: addRow()" >Add Semester</button>
+		<input type="text" id="semesterNumber" >
+		<button type="button" onclick="javascript: addRow()" >Add Semester</button>
 		<p id="hiddenSemester"></p>
 		<input type="text" name="student_id" hidden="true" value="{{ $studentEdit[0]->id }}">
 		<br><button type="submit" class="btn btn-primary" type="button">Edit grade</button>
