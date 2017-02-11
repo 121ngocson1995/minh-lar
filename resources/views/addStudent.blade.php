@@ -43,11 +43,11 @@
 		cell1.innerHTML = '<input type="text" name="semesterAdd'+numRows+'" value="'+semesterNumber+'" readonly>';
 		checkSemester.push(semesterNumber);
 		if (startDate == undefined ||endDate == undefined) {
-			cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" >';
-			cell3.innerHTML = '<input type="date" name="endDate'+numRows+'" >';
+			cell2.innerHTML = '<input type="date" name="startDateAdd'+numRows+'" >';
+			cell3.innerHTML = '<input type="date" name="endDateAdd'+numRows+'" >';
 		} else {
-			cell2.innerHTML = '<input type="date" name="startDate'+numRows+'" value="'+startDate+'" readonly>';
-			cell3.innerHTML = '<input type="date" name="endDate'+numRows+'" value="'+endDate+'" readonly>';
+			cell2.innerHTML = '<input type="date" name="startDateAdd'+numRows+'" value="'+startDate+'" readonly>';
+			cell3.innerHTML = '<input type="date" name="endDateAdd'+numRows+'" value="'+endDate+'" readonly>';
 		};
 		cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" >';
 		cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" >';
