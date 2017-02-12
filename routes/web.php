@@ -21,3 +21,11 @@ Route::post('/DeleteStudent', 'StudentController@delete');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
+
+/*
+** From here on is for testing purposes
+*/
+
+Route::get('record', function() {
+	return view('record');
+});
