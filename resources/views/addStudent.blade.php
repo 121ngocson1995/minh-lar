@@ -72,7 +72,7 @@
 		cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" >';
 		cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" >';
 
-		document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
+		document.getElementById("hiddenSemester").innerHTML = '<input id="semesterCount" type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
 		document.getElementById("semesterNumber").value= "";
 	}
 	function allowDrop(event){
@@ -97,6 +97,9 @@
 		event.preventDefault();
 		var data = event.dataTransfer.getData("text").split(",");
 		document.getElementById("addGradeTable").deleteRow(data[0]);
+		semesterCount = document.getElementById("semesterCount").getAttribute("value");
+		semesterCount = parseInt(semesterCount)-1;
+		document.getElementById("semesterCount").setAttribute("value", semesterCount);
 		checkSemester.splice(checkSemester.indexOf(data[1],1));
 	}
 

@@ -1,100 +1,116 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
+@extends('layout')
+@section('title')
+<h1 style="font-size: 400%" align="center">Edit Student</h1>
 
-	<link rel="stylesheet" href="{{ URL::asset('css/bootstrap.min.css') }}">
-	<script src="{{ URL::asset('js/bootstrap.min') }}"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-</head>
-<body>
-	<style type="text/css">
-		.inputtrans {
-			background-color: transparent;
+
+@stop
+@section('table')
+<style type="text/css">
+	#div1 {
+		width: 70px;
+		height: 70px;
+		padding: 10px;
+		border: 1px solid #aaaaaa;
+		background-image: url("{{ URL::asset('image/garbage bin.jpeg') }}");
+		background-size: Auto 70px;
+	}
+	.img_bin{
+		width:80px;height:80px;
+		position: relative;
+		left: 90%;
+	}
+</style>
+<link rel="stylesheet" href="{{ URL::asset('css/bootstrap.min.css') }}">
+<script src="{{ URL::asset('js/bootstrap.min') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<style type="text/css">
+	.inputtrans {
+		background-color: transparent;
+	}
+
+	input.inputtrans {
+		padding: 10px;
+		border: none;
+		border-bottom: solid 2px #f7f7f7;
+		transition: border 0.3s;
+		text-align: center;
+	}
+
+	.inputtrans:focus {
+		outline: none;
+		color: cornflowerblue;
+		border-bottom: solid 2px #c9c9c9;
+	}
+
+	.toBeDel {
+		background-color: rgba(255, 0, 0, 0.5) !important;
+	}
+
+	.toBeDel>td>input {
+		color: white;
+		border-bottom: solid 2px transparent;
+		transition: color 0.3s;
+	}
+</style>
+
+<script langauge="JavaScript">
+	var checkSemester = new Array();
+	var rowOfSemesterAdd = 0;
+	var deleteSemester = new Array();
+	function addRow()
+	{
+		var semesters = <?php echo json_encode($semesters->toArray()); ?>;
+		var semesterNumber = document.getElementById('semesterNumber').value;
+		if (semesterNumber.localeCompare('') == 0) {
+			alert("you must enter semester number");
+			return;
 		}
-
-		input.inputtrans {
-			padding: 10px;
-			border: none;
-			border-bottom: solid 2px #f7f7f7;
-			transition: border 0.3s;
-			text-align: center;
-		}
-
-		.inputtrans:focus {
-			outline: none;
-			color: cornflowerblue;
-			border-bottom: solid 2px #c9c9c9;
-		}
-
-		.toBeDel {
-			background-color: rgba(255, 0, 0, 0.5) !important;
-		}
-
-		.toBeDel>td>input {
-			color: white;
-			border-bottom: solid 2px transparent;
-			transition: color 0.3s;
-		}
-	</style>
-
-	<script langauge="JavaScript">
-		var checkSemester = new Array();
-		var rowOfSemesterAdd = 0;
-		var deleteSemester = new Array();
-		function addRow()
-		{
-			var semesters = <?php echo json_encode($semesters->toArray()); ?>;
-			var semesterNumber = document.getElementById('semesterNumber').value;
-			if (semesterNumber.localeCompare('') == 0) {
-				alert("you must enter semester number");
+		for (var i = 0; i < checkSemester.length; i++) {
+			if(checkSemester[i] == semesterNumber){
+				alert("you already insert grade for this semester");
 				return;
 			}
-			for (var i = 0; i < checkSemester.length; i++) {
-				if(checkSemester[i] == semesterNumber){
-					alert("you already insert grade for this semester");
-					return;
-				}
-			}
-			rowOfSemesterAdd = rowOfSemesterAdd + 1;
-			var arrTables = document.getElementById('gradeTable');
-			var oRows = arrTables.rows;
-			var numRows = oRows.length;
-			var newRow = document.getElementById('gradeTable').insertRow( numRows );
-			var cell1 = newRow.insertCell(0);
-			var cell2 = newRow.insertCell(1);
-			var cell3 = newRow.insertCell(2);
-			var cell4 = newRow.insertCell(3);
-			var cell5 = newRow.insertCell(4);
-			var cell6 = newRow.insertCell(5);
-			var startDate;
-			var endDate;
-			for (var i = 0; i < semesters.length; i++) {
-				if(semesterNumber == semesters[i].semester){
-					startDate = semesters[i].startDate.toString();
-					endDate = semesters[i].endDate.toString();
-				}
-			}
-			cell1.innerHTML = '<input type="text" name="semesterAdd'+rowOfSemesterAdd+'" value="'+semesterNumber+'" style="width: 30px; margin-left: 15px;" readonly required>';
-			checkSemester.push(semesterNumber);
-			if (startDate == undefined ||endDate == undefined) {
-				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" style="width: 95px;" required>';
-				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" style="width: 95px;" required>';
-			} else {
-				cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" value="'+startDate+'" readonly required>';
-				cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" value="'+endDate+'" readonly required>';
-			};
-			cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" maxlength="4" style="width: 50px;" required>';
-			cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" maxlength="4" style="width: 50px;" required>';
-			cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" maxlength="4" style="width: 50px;" required>';
-
-			document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+rowOfSemesterAdd+' required">';
-			document.getElementById("semesterNumber").value= "";
 		}
+		rowOfSemesterAdd = rowOfSemesterAdd + 1;
+		var arrTables = document.getElementById('gradeTable');
+		var oRows = arrTables.rows;
+		var numRows = oRows.length;
+		var newRow = document.getElementById('gradeTable').insertRow( numRows );
+		var cell1 = newRow.insertCell(0);
+		var cell2 = newRow.insertCell(1);
+		var cell3 = newRow.insertCell(2);
+		var cell4 = newRow.insertCell(3);
+		var cell5 = newRow.insertCell(4);
+		var cell6 = newRow.insertCell(5);
+		var startDate;
+		var endDate;
+		for (var i = 0; i < semesters.length; i++) {
+			if(semesterNumber == semesters[i].semester){
+				startDate = semesters[i].startDate.toString();
+				endDate = semesters[i].endDate.toString();
+			}
+		}
+		cell1.innerHTML = '<input type="text" name="semesterAdd'+rowOfSemesterAdd+'" value="'+semesterNumber+'" style="width: 30px; margin-left: 15px;" readonly required>';
+		checkSemester.push(semesterNumber);
+		if (startDate == undefined ||endDate == undefined) {
+			cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" style="width: 95px;" required>';
+			cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" style="width: 95px;" required>';
+		} else {
+			cell2.innerHTML = '<input type="date" name="startDateAdd'+rowOfSemesterAdd+'" value="'+startDate+'" readonly required>';
+			cell3.innerHTML = '<input type="date" name="endDateAdd'+rowOfSemesterAdd+'" value="'+endDate+'" readonly required>';
+		};
+		cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" maxlength="4" style="width: 50px;" required>';
+		cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" maxlength="4" style="width: 50px;" required>';
+		cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" maxlength="4" style="width: 50px;" required>';
+
+		document.getElementById("hiddenSemester").innerHTML = '<input type="text" name="semesterCount" hidden="true" value="'+rowOfSemesterAdd+' required">';
+		document.getElementById("semesterNumber").value= "";
+	}
 
 
 
-		function changeColor(o, delBtn){
+	function changeColor(o, delBtn){
 			// if (document.getElementById('row'+o).style.backgroundColor==="transparent" || document.getElementById('row'+o).style.backgroundColor==="") {
 			// 	document.getElementById('row'+o).style.backgroundColor='rgba(255, 0, 0, 0.5)';
 			// 	deleteSemester.push(o);
@@ -108,9 +124,9 @@
 
 			$(delBtn).closest('tr').toggleClass("toBeDel");
 			deleteSemester.includes(o) ? deleteSemester.splice(deleteSemester.indexOf(o), 1) : deleteSemester.push(o);
-        }
+		}
 
-        
+
 	</script>
 	
 	
@@ -125,6 +141,7 @@
 				<th><input type="text" name="age" class="inputtrans" value="{{ $studentEdit[0]->age }}"></th>
 			</tr>
 		</table>
+		<div id="div1" ondrop="javascript: drop(event)" ondragover="javascript: allowDrop(event)" class="img_bin"></div>
 		<table class="table table-hover" id="gradeTable">
 			<tr>
 				<th>Semester</th>
@@ -137,7 +154,7 @@
 			</tr>
 			<?php $grades = $studentEdit[0]->grades; ?>
 			@for($i=0; $i < count($grades) ; $i++)
-			<tr id="row{{$i}}">
+			<tr id="row{{$i}}" draggable="true" ondragstart="javascript: drag(event)"> 
 				<td><input type="text" class="inputtrans" name="semester{{$i}}" value="{{ $grades[$i]->semester->semester}}" style="width: 30px; margin-left: 15px;" readonly="" required=""></td>
 				<td><input type="text" class="inputtrans" name="startDate{{$i}}" value="{{ $grades[$i]->semester->startDate}}" style="width: 95px;" readonly="" required=""></td>
 				<td><input type="text" class="inputtrans" name="endDate{{$i}}" value="{{ $grades[$i]->semester->endDate}}" style="width: 95px;" readonly="" required=""></td>
@@ -157,13 +174,12 @@
 
 	<script type="text/javascript">
 		$("#EditStudent").submit( function(eventObj) {
-				$('<input />').attr('type', 'hidden')
-					.attr('name', "semesterDelete")
-					.attr('value', deleteSemester.toString())
-					.appendTo('#EditStudent');
-				return true;
-			});
+			$('<input />').attr('type', 'hidden')
+			.attr('name', "semesterDelete")
+			.attr('value', deleteSemester.toString())
+			.appendTo('#EditStudent');
+			return true;
+		});
 	</script>
 
-</body>
-</html>
+	@stop

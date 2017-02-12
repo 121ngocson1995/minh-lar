@@ -105,7 +105,7 @@
 			<th>{{ $student->age }}</th>
 			<?php $grade = $student->grades; ?>
 			<th>@for ($j=0; $j < count($grade) ; $j++) 
-					@if ($grade[$j]->semester_id == $semesters[$i]->semester)
+					@if ($grade[$j]->semester_id == $semesters[$i]->id)
 						Math: {{ $grade[$j]->math }} <br>
 						Chemistry: {{ $grade[$j]->chemistry }} <br>
 						Physics: {{ $grade[$j]->physics }} <br>
