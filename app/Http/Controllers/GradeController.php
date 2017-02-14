@@ -10,10 +10,10 @@ use DB;
 
 class GradeController extends Controller
 {
-    public function addGrade(Request $request, $i, $studentLast, $semester_id)
+    public function addGrade(Request $request, $semesterNumber, $studentLast, $semester_id)
 	{
 		$gradeNew = new Grade();
-		$semester = $request->all()['semesterAdd'.$i];
+		$semester = $request->all()['semesterAdd'.$semesterNumber];
 		$math = $request->all()['semesterAdd'.$semester.'MathGrade'];
 		$physics = $request->all()['semesterAdd'.$semester.'PhysicsGrade'];
 		$chemistry = $request->all()['semesterAdd'.$semester.'ChemistryGrade'];
@@ -25,7 +25,7 @@ class GradeController extends Controller
 		$gradeNew->save();
 	}
 
-	public function deleteGrade($i, $studentEdit, $semester_id)
+	public function deleteGrade($semesterNumber, $studentEdit, $semester_id)
 	{	
 		$deleteGrade = Grade::where('student_id',$studentEdit->id)->where('semester_id', $semester_id)->delete();
 	}

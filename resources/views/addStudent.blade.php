@@ -24,6 +24,7 @@
 </style>
 <script langauge="JavaScript">
 	var checkSemester = new Array();
+	var semesterArray = new Array();
 	function addRow()
 	{
 		var semesters = <?php echo json_encode($semesters->toArray()); ?>;
@@ -59,21 +60,34 @@
 				endDate = semesters[i].endDate.toString();
 			}
 		}
-		cell1.innerHTML = '<input id="semesterName" type="text" name="semesterAdd'+numRows+'" value="'+semesterNumber+'" readonly>';
+		cell1.innerHTML = '<input id="semesterName" type="text" name="semesterAdd'+semesterNumber+'" value="'+semesterNumber+'" readonly>';
 		checkSemester.push(semesterNumber);
 		if (startDate == undefined ||endDate == undefined) {
-			cell2.innerHTML = '<input type="date" name="startDateAdd'+numRows+'" >';
-			cell3.innerHTML = '<input type="date" name="endDateAdd'+numRows+'" >';
+			cell2.innerHTML = '<input type="date" name="startDateAdd'+semesterNumber+'" >';
+			cell3.innerHTML = '<input type="date" name="endDateAdd'+semesterNumber+'" >';
 		} else {
-			cell2.innerHTML = '<input type="date" name="startDateAdd'+numRows+'" value="'+startDate+'" readonly>';
-			cell3.innerHTML = '<input type="date" name="endDateAdd'+numRows+'" value="'+endDate+'" readonly>';
+			cell2.innerHTML = '<input type="date" name="startDateAdd'+semesterNumber+'" value="'+startDate+'" readonly>';
+			cell3.innerHTML = '<input type="date" name="endDateAdd'+semesterNumber+'" value="'+endDate+'" readonly>';
 		};
 		cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" >';
 		cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" >';
 		cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" >';
 
-		document.getElementById("hiddenSemester").innerHTML = '<input id="semesterCount" type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
+		semesterArray.push(semesterNumber);
+		// document.getElementById("hiddenSemester").innerHTML = '<input id="semesterCount" type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
 		document.getElementById("semesterNumber").value= "";
+	}
+
+	function del_tr(remtr)  
+	{   
+		while((remtr.nodeName.toLowerCase())!='tr')
+			remtr = remtr.parentNode;
+
+		remtr.parentNode.removeChild(remtr);
+	}
+	function del_id(id)  
+	{   
+		del_tr(document.getElementById(id));
 	}
 	function allowDrop(event){
 		event.preventDefault();
@@ -84,7 +98,7 @@
 		for (var i = 0; i < event.target.childNodes.length; i++) {
 			for (var j = 0; j < event.target.childNodes[i].children[0].attributes.length; j++) {
 				if (event.target.childNodes[i].children[0].attributes[j].value.localeCompare('semesterAdd'+event.target.id)==0) {
-					semesterNumber = checkSemester.indexOf(event.target.childNodes[i].children[0].attributes[j].value);
+					semesterNumber = event.target.childNodes[i].children[0].attributes[j+1 ].value;
 				}
 			}
 			
@@ -96,16 +110,16 @@
 	function drop(event) {
 		event.preventDefault();
 		var data = event.dataTransfer.getData("text").split(",");
-		document.getElementById("addGradeTable").deleteRow(data[0]);
-		semesterCount = document.getElementById("semesterCount").getAttribute("value");
-		semesterCount = parseInt(semesterCount)-1;
-		document.getElementById("semesterCount").setAttribute("value", semesterCount);
-		checkSemester.splice(checkSemester.indexOf(data[1],1));
+		del_id(data[0]);
+		// semesterCount = document.getElementById("semesterCount").getAttribute("value");
+		// semesterCount = parseInt(semesterCount)-1;
+		// document.getElementById("semesterCount").setAttribute("value", semesterCount);
+		checkSemester.splice(checkSemester.indexOf(data[1]),1);
 	}
 
 </script>
 
-<form action="AddStudent" method="get">
+<form id="AddStudent" action="AddStudent" method="get">
 	<table>
 		<tr>
 			<th text align="left">Name:</th>
@@ -136,4 +150,14 @@
 	</div>
 	<br><input type="submit" value="Add">
 </form>
+<script type="text/javascript">
+
+	$("#AddStudent").submit( function(eventObj) {
+		$('<input />').attr('type', 'hidden')
+		.attr('name', "semesterArray")
+		.attr('value', checkSemester.toString())
+		.appendTo('#AddStudent');
+		return true;
+	});
+</script>
 @stop

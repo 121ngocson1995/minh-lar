@@ -91,8 +91,6 @@ class StudentController extends Controller
 					$semester = $request->all()['semesterAdd'.$i];
 
 					$semesterIdArray = Semester::where('semester', '=', $semester)->select('id')->get()->toArray();
-
-					$semester_id = $semesterIdArray[0]['id'];
 					(new GradeController)->addGrade($request,$i, $studentEdit, $semester_id);
 				}else{
 					$semester_id = (new SemesterController)->newSemester($request,$i);
@@ -131,25 +129,26 @@ class StudentController extends Controller
 			'age' => $age
 		];
 		$studentLast = Student::create($studentNew);
-		
-		if (!array_key_exists( 'semesterCount', $request->all())) {
+		$semesterArray = $request->all()['semesterArray'];
+		$semesterArray = explode(",",$semesterArray);
+
+		if (strcmp(trim($semesterArray[0]), '') == 0) {
 			$msg = 'Student added successfully. '.$studentLast->name.'\'s student ID is '.$studentLast->id;
 			return redirect('')->with( 'msg',$msg);
 		}
 
 		
-		$semesterCount = $request->all()['semesterCount'];
-		for ($i=1; $i <= $semesterCount; $i++) { 
-			if ((new SemesterController)->checkSemester($request, $i)) {
-				$semester = $request->all()['semesterAdd'.$i];
+		for ($i=0; $i < count($semesterArray); $i++) { 
+			if ((new SemesterController)->checkSemester($request, $semesterArray[$i])) {
+				$semester = $request->all()['semesterAdd'.$semesterArray[$i]];
 
 				$semesterIdArray = Semester::where('semester', '=', $semester)->select('id')->get()->toArray();
 
 				$semester_id = $semesterIdArray[0]['id'];
-				(new GradeController)->addGrade($request,$i, $studentLast, $semester_id);
+				(new GradeController)->addGrade($request,$semesterArray[$i], $studentLast, $semester_id);
 			}else{
-				$semester_id = (new SemesterController)->newSemester($request,$i);
-				(new GradeController)->addGrade($request,$i, $studentLast, $semester_id);
+				$semester_id = (new SemesterController)->newSemester($request,$semesterArray[$i]);
+				(new GradeController)->addGrade($request,$semesterArray[$i], $studentLast, $semester_id);
 			}
 		}
 		$msg = 'Student added successfully. '.$studentLast->name.'\'s student ID is '.$studentLast->id;
