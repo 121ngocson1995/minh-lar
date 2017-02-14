@@ -43,7 +43,7 @@
 		var oRows = arrTables.rows;
 		var numRows = oRows.length;
 		var newRow = document.getElementById('addGradeTable').insertRow( numRows );
-		newRow.id = numRows;
+		newRow.id = semesterNumber;
 		newRow.setAttribute('draggable', "true");
 		newRow.setAttribute('ondragstart', "javascript: drag(event)");
 		var cell1 = newRow.insertCell(0);
@@ -69,9 +69,9 @@
 			cell2.innerHTML = '<input type="date" name="startDateAdd'+semesterNumber+'" value="'+startDate+'" readonly>';
 			cell3.innerHTML = '<input type="date" name="endDateAdd'+semesterNumber+'" value="'+endDate+'" readonly>';
 		};
-		cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" >';
-		cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" >';
-		cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" >';
+		cell4.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'MathGrade" required>';
+		cell5.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'ChemistryGrade" required>';
+		cell6.innerHTML = '<input type="text" name="semesterAdd'+semesterNumber+'PhysicsGrade" required>';
 
 		semesterArray.push(semesterNumber);
 		// document.getElementById("hiddenSemester").innerHTML = '<input id="semesterCount" type="text" name="semesterCount" hidden="true" value="'+numRows+'">';
